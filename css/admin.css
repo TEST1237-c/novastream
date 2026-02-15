@@ -2,6 +2,17 @@
     display: none !important;
 }
 
+/* Masquer les flèches/spinners natifs sur les champs number (tous navigateurs) */
+.episode-row input[type="number"]::-webkit-outer-spin-button,
+.episode-row input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.episode-row input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+
 .admin-login-prompt {
     max-width: 400px;
     margin: 6rem auto;
