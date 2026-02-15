@@ -127,6 +127,22 @@
     color: var(--accent);
 }
 
+/* Petit bouton 'Ajouter' dans l'en-tête de saison */
+.btn-add-episode-top {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--muted);
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-left: 0.5rem;
+}
+.btn-add-episode-top:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
 .season-header h4 {
     font-size: 1.1rem;
     font-weight: 600;
