@@ -140,7 +140,24 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleBtn.textContent = isCollapsed ? '▼' : '▶';
             episodesWrapper.classList.toggle('collapsed');
         });
-        seasonBlock.querySelector('.btn-add-episode-in-season').addEventListener('click', () => addEpisodeToSeason(seasonBlock));
+        seasonBlock.querySelector('.btn-add-episode-in-season').addEventListener('click', () => {
+            // Demander à l'utilisateur combien d'épisodes il veut ajouter
+            const raw = prompt("Combien d'épisodes veux-tu ajouter ?", "1");
+            if (raw === null) return; // annulation
+            let count = parseInt(raw, 10);
+            if (isNaN(count) || count <= 0) {
+                alert('Nombre invalide. Annulé.');
+                return;
+            }
+            const MAX_BATCH = 200;
+            if (count > MAX_BATCH) {
+                if (!confirm(`Tu as demandé ${count} épisodes — continuer ? (limite ${MAX_BATCH})`)) return;
+                count = MAX_BATCH;
+            }
+            for (let i = 0; i < count; i++) {
+                addEpisodeToSeason(seasonBlock);
+            }
+        });
         // episodes are added via the '+ Ajouter un épisode' button at the bottom
         seasonBlock.querySelector('.btn-remove-season').addEventListener('click', () => {
             seasonBlock.remove();
