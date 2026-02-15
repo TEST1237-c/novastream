@@ -161,17 +161,21 @@
     color: white;
 }
 
+
 .episodes-wrapper {
-    max-height: 2000px;
-    overflow: hidden;
-    transition: max-height 0.3s ease, opacity 0.3s ease;
+    /* Limit visible height and allow scrolling so many episodes can be added */
+    max-height: 70vh;
+    overflow: auto;
+    transition: opacity 0.3s ease;
     opacity: 1;
+    padding-right: 0.5rem; /* space for scrollbar */
 }
 
 .episodes-wrapper.collapsed {
     max-height: 0;
     opacity: 0;
     pointer-events: none;
+    overflow: hidden;
 }
 
 .episodes-container {
@@ -272,17 +276,7 @@
 }
 
 .episode-row.hidden {
-.episodes-wrapper {
-     /* Allow unlimited content height and let the wrapper expand; keep opacity transition only */
-     max-height: none;
-     overflow: visible;
-     transition: opacity 0.3s ease;
-     opacity: 1;
-}
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 0.9rem;
+    display: none;
 }
 
 .ep-description {
