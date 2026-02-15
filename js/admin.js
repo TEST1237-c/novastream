@@ -81,9 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function addEpisodeToSeason(seasonBlock, ep = {}) {
         const seasonNum = seasonBlock.dataset.season;
         const episodesContainer = seasonBlock.querySelector('.episodes-container');
+        // calculer le numéro d'épisode suivant (max existant + 1)
+        const existingNums = Array.from(episodesContainer.querySelectorAll('.ep-num')).map(i => parseInt(i.value, 10) || 0);
+        const maxNum = existingNums.length ? Math.max(...existingNums) : 0;
+        const nextEpisodeNumber = maxNum + 1;
         const epIndex = episodesContainer.querySelectorAll('.episode-item').length;
         const div = document.createElement('div');
-        div.innerHTML = renderEpisodeInSeason(ep, epIndex, seasonNum);
+        // passer le numéro calculé au rendu pour le préremplir
+        const epWithNumber = Object.assign({}, ep, { episode: nextEpisodeNumber });
+        div.innerHTML = renderEpisodeInSeason(epWithNumber, epIndex, seasonNum);
         episodesContainer.appendChild(div.firstElementChild);
         const epBlock = episodesContainer.lastElementChild;
         attachEpisodeListeners(epBlock);
