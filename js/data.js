@@ -137,8 +137,16 @@ async function loadContentAsync() {
                     contentCache.series.forEach(item => {
                         const localItem = local.series.find(l => l.id === item.id);
                         if (localItem) {
-                            if (localItem.episodes?.length) item.episodes = localItem.episodes;
-                            if (localItem.description) item.description = localItem.description;
+                            // Ne pas écraser les épisodes serveur par des épisodes locaux possiblement obsolètes.
+                            // On applique les épisodes locaux uniquement si le serveur n'en fournit pas
+                            // ou si l'élément local a été créé localement (id commençant par 'item_').
+                            const hasServerEpisodes = Array.isArray(item.episodes) && item.episodes.length > 0;
+                            const localCreated = typeof localItem.id === 'string' && localItem.id.startsWith('item_');
+                            if ((!hasServerEpisodes && localItem.episodes?.length) || localCreated) {
+                                item.episodes = localItem.episodes;
+                            }
+                            // Conserver la description locale seulement si le serveur n'a pas de description
+                            if (localItem.description && !item.description) item.description = localItem.description;
                         }
                     });
                 }
