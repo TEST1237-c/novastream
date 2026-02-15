@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button type="button" class="btn-toggle-season" title="Développer/Réduire" data-collapsed="false">▼</button>
                     <h4>Saison ${seasonNum}</h4>
                     <span class="season-count">${episodes.length} épisode${episodes.length !== 1 ? 's' : ''}</span>
+                    <button type="button" class="btn-add-episode-top" title="Ajouter un épisode">+ Ajouter</button>
                     <button type="button" class="btn-remove-season" title="Supprimer la saison">×</button>
                 </div>
                 <div class="episodes-wrapper" data-season="${seasonNum}">
@@ -135,6 +136,19 @@ document.addEventListener('DOMContentLoaded', () => {
             episodesWrapper.classList.toggle('collapsed');
         });
         seasonBlock.querySelector('.btn-add-episode-in-season').addEventListener('click', () => addEpisodeToSeason(seasonBlock));
+        const addTop = seasonBlock.querySelector('.btn-add-episode-top');
+        if (addTop) addTop.addEventListener('click', () => {
+            // insert new episode at the top so user doesn't have to scroll down
+            const episodesContainer = seasonBlock.querySelector('.episodes-container');
+            const epIndex = episodesContainer.querySelectorAll('.episode-item').length;
+            const div = document.createElement('div');
+            div.innerHTML = renderEpisodeInSeason({}, epIndex, seasonBlock.dataset.season);
+            episodesContainer.insertBefore(div.firstElementChild, episodesContainer.firstElementChild);
+            const epBlock = episodesContainer.firstElementChild;
+            attachEpisodeListeners(epBlock);
+            updateSeasonCount(seasonBlock);
+            epBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
         seasonBlock.querySelector('.btn-remove-season').addEventListener('click', () => {
             seasonBlock.remove();
         });
