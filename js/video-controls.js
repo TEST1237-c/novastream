@@ -284,6 +284,13 @@
             if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
             const video = getActiveVideo();
             if (!video) return;
+            // Espace -> toggle play/pause
+            const isSpace = (e.code === 'Space') || (e.key === ' ' ) || (e.key === 'Spacebar');
+            if (isSpace) {
+                e.preventDefault();
+                try { video.paused ? video.play() : video.pause(); } catch (err) {}
+                return;
+            }
             if (e.key === 'ArrowRight') {
                 e.preventDefault();
                 video.currentTime = Math.min(video.currentTime + 15, video.duration || video.currentTime + 15);
