@@ -911,3 +911,28 @@
         margin-top: 1.25rem;
     }
 }
+
+/* Amélioration de la visibilité des flèches haut/bas sur les inputs number
+   (contrôles d'épisode) : affichage d'icônes personnalisées vertes et espace
+   de padding pour éviter le chevauchement du texte. */
+.episode-row input[type="number"] {
+    /* espace pour l'icône à droite */
+    padding-right: 46px;
+    /* on conserve le style existant mais on ajoute un fond d'icône */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 18px 36px;
+    /* SVG inline (flèche up / flèche down) en vert (#22c55e) */
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 36'%3E%3Cpath fill='%2322c55e' d='M6 6l4 4H2z'/%3E%3Cpath fill='%2322c55e' d='M6 30l4-4H2z'/%3E%3C/svg%3E");
+}
+
+/* Survol : accentuer la couleur pour indiquer l'interaction */
+.episode-row input[type="number"]:hover {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 36'%3E%3Cpath fill='%237c3aed' d='M6 6l4 4H2z'/%3E%3Cpath fill='%237c3aed' d='M6 30l4-4H2z'/%3E%3C/svg%3E");
+}
+
+/* Pour améliorer l'accessibilité, agrandir légèrement le contrôle lors du focus */
+.episode-row input[type="number"]:focus {
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.08);
+    outline: none;
+}
