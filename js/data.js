@@ -175,34 +175,7 @@ function getContent() {
 
 function saveContentLocal(content) {
     contentCache = content;
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
-    } catch (e) {
-        // Si on dépasse le quota (souvent dû aux images en base64), on essaie
-        // de nettoyer les champs `image` contenant des data URLs puis on retente.
-        try {
-            if (e && (e.name === 'QuotaExceededError' || e.code === 22 || e.name === 'NS_ERROR_DOM_QUOTA_REACHED')) {
-                console.warn('localStorage quota exceeded — stripping data URLs before retrying');
-                const cleaned = JSON.parse(JSON.stringify(content));
-                function stripImages(list) {
-                    if (!Array.isArray(list)) return;
-                    list.forEach(item => {
-                        if (item && typeof item.image === 'string' && item.image.startsWith('data:')) {
-                            item.image = ''; // supprimer la data URL pour réduire la taille
-                        }
-                    });
-                }
-                stripImages(cleaned.films);
-                stripImages(cleaned.series);
-                // Retenter avec la version nettoyée
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(cleaned));
-            } else {
-                throw e;
-            }
-        } catch (err2) {
-            console.error('Impossible de sauvegarder le contenu localement:', err2);
-        }
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
 }
 
 async function addItem(category, item) {
