@@ -235,11 +235,32 @@
     }
 
     function getActiveVideo() {
+        // Priorité: player modal
         const modal = document.getElementById('playerModal');
         if (modal?.classList.contains('active')) {
             const v = modal.querySelector('video');
             if (v) return v;
         }
+
+        // Si un élément est en fullscreen via la Fullscreen API, récupérer sa vidéo
+        const fsEl = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+        if (fsEl) {
+            if (fsEl.tagName === 'VIDEO') return fsEl;
+            try {
+                const v = fsEl.querySelector && fsEl.querySelector('video');
+                if (v) return v;
+            } catch (e) {}
+        }
+
+        // Safari/iOS: vérifier si une vidéo est en webkitDisplayingFullscreen
+        const videos = document.querySelectorAll('video');
+        for (let i = 0; i < videos.length; i++) {
+            try {
+                if (videos[i].webkitDisplayingFullscreen) return videos[i];
+            } catch (e) {}
+        }
+
+        // Fallback: vidéo visible dans la page
         const mediaWrap = document.querySelector('.media-player-wrap');
         if (mediaWrap?.offsetParent) return mediaWrap.querySelector('video');
         return null;
