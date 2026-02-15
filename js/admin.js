@@ -140,21 +140,17 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleBtn.textContent = isCollapsed ? '▼' : '▶';
             episodesWrapper.classList.toggle('collapsed');
         });
-        seasonBlock.querySelector('.btn-add-episode-in-season').addEventListener('click', () => {
-            // Demander à l'utilisateur combien d'épisodes il veut ajouter
-            const raw = prompt("Combien d'épisodes veux-tu ajouter ?", "1");
-            if (raw === null) return; // annulation
-            let count = parseInt(raw, 10);
-            if (isNaN(count) || count <= 0) {
-                alert('Nombre invalide. Annulé.');
-                return;
-            }
+        seasonBlock.querySelector('.btn-add-episode-in-season').addEventListener('click', async () => {
+            // Show styled batch dialog instead of native prompt
+            const count = await showBatchDialog(seasonBlock);
+            if (!count || count <= 0) return;
             const MAX_BATCH = 200;
-            if (count > MAX_BATCH) {
-                if (!confirm(`Tu as demandé ${count} épisodes — continuer ? (limite ${MAX_BATCH})`)) return;
-                count = MAX_BATCH;
+            let useCount = count;
+            if (useCount > MAX_BATCH) {
+                if (!confirm(`Tu as demandé ${useCount} épisodes — continuer ? (limite ${MAX_BATCH})`)) return;
+                useCount = MAX_BATCH;
             }
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < useCount; i++) {
                 addEpisodeToSeason(seasonBlock);
             }
         });
@@ -165,6 +161,51 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     addEpisodeBtn?.addEventListener('click', () => addSeasonRow());
+
+    // --- Batch dialog helper ---
+    function showBatchDialog(seasonBlock) {
+        return new Promise((resolve) => {
+            const backdrop = document.createElement('div');
+            backdrop.className = 'batch-backdrop';
+            const dialog = document.createElement('div');
+            dialog.className = 'batch-dialog';
+            dialog.innerHTML = `
+                <h3>Ajouter plusieurs épisodes</h3>
+                <p>Indique combien d'épisodes créer pour cette saison.</p>
+                <div class="input-row">
+                    <input type="number" min="1" value="1" class="batch-count" />
+                </div>
+                <div class="dialog-actions">
+                    <button class="btn cancel">Annuler</button>
+                    <button class="btn primary confirm">Créer</button>
+                </div>
+            `;
+            backdrop.appendChild(dialog);
+            document.body.appendChild(backdrop);
+
+            const input = dialog.querySelector('.batch-count');
+            const btnCancel = dialog.querySelector('.btn.cancel');
+            const btnConfirm = dialog.querySelector('.btn.confirm');
+
+            function cleanup(result) {
+                document.body.removeChild(backdrop);
+                resolve(result);
+            }
+
+            btnCancel.addEventListener('click', () => cleanup(null));
+            btnConfirm.addEventListener('click', () => {
+                const v = parseInt(input.value, 10);
+                cleanup(isNaN(v) ? null : v);
+            });
+
+            backdrop.addEventListener('click', (e) => {
+                if (e.target === backdrop) cleanup(null);
+            });
+
+            input.focus();
+            input.select();
+        });
+    }
 
     function getEpisodes() {
         const seasons = episodesContainer.querySelectorAll('.season-block');
