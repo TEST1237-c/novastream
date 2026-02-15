@@ -272,12 +272,13 @@
 }
 
 .episode-row.hidden {
-    display: none;
+.episodes-wrapper {
+     /* Allow unlimited content height and let the wrapper expand; keep opacity transition only */
+     max-height: none;
+     overflow: visible;
+     transition: opacity 0.3s ease;
+     opacity: 1;
 }
-
-.episode-row input {
-    padding: 0.5rem 0.75rem;
-    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 8px;
     color: var(--text);
