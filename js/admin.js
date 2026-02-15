@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showSuccess();
                 renderLists();
             } catch (err) {
-                alert('Erreur lors de l\'ajout. Vérifie ta config Supabase.');
+                alert('Erreur lors de l\'ajout. Vérifie ta config Supabase.\n\n' + (err && err.message ? err.message : err));
             }
         }
     });
